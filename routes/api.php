@@ -22,3 +22,6 @@ use App\Http\Controllers\UserApiController;
 
 //get api for fetch single users or all
 Route::get('/users/{id?}', [UserApiController::class, 'ShowUser']);
+
+//post api for add user
+Route::post('/add-user', [UserApiController::class, 'AddUser']);
