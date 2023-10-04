@@ -42,7 +42,7 @@ class UserApiController extends Controller
             User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => bcrypt($request->email),
+                'password' => bcrypt($request->password),
             ]);
             $message = 'User Created Successfully';
             return response()->json(['message'=>$message], 201);
@@ -75,7 +75,42 @@ class UserApiController extends Controller
             ]);
         }    
             
-            $message = 'User Created Successfully';
+            $message = 'Multiple User Created Successfully';
+            return response()->json(['message'=>$message], 201);
+    }
+
+    //put api for update users data
+    public function UpdateUserDetails(Request $request,$id){
+        $users = $request->all();
+        $rules = [
+            'name'=>'required',
+            'email'=>'required',
+            'password'=>'required',
+        ];
+        $custom_msg = [
+            'name.required'=>'Name is required',
+            'email.required'=>'Email is required',
+            'password.required'=>'Password is required',
+        ];
+        $validator = Validator::make($users,$rules,$custom_msg);
+        if($validator->fails()){
+            return response()->json($validator->errors(), 422);
+        }
+
+        $user = User::findOrFail($id);
+        if(!empty($request->password)){
+            $password = bcrypt($request->password);
+        }else{
+            $password = $user->password;
+        }
+        
+            User::findOrFail($id)->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $password,
+            ]);
+
+            $message = 'User Updated Successfully';
             return response()->json(['message'=>$message], 201);
     }
 }
