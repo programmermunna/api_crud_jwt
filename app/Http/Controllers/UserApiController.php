@@ -110,7 +110,42 @@ class UserApiController extends Controller
             'password' => $password,
             ]);
 
-            $message = 'User Updated Successfully';
+            $message = 'Multiple User Updated Successfully';
+            return response()->json(['message'=>$message], 201);
+    }
+
+    //patch api for update single users data
+    public function UpdateSingleUser(Request $request,$id){
+        $users = $request->all();
+        $rules = [
+            'name'=>'required',
+            'email'=>'required',
+            'password'=>'required',
+        ];
+        $custom_msg = [
+            'name.required'=>'Name is required',
+            'email.required'=>'Email is required',
+            'password.required'=>'Password is required',
+        ];
+        $validator = Validator::make($users,$rules,$custom_msg);
+        if($validator->fails()){
+            return response()->json($validator->errors(), 422);
+        }
+
+        $user = User::findOrFail($id);
+        if(!empty($request->password)){
+            $password = bcrypt($request->password);
+        }else{
+            $password = $user->password;
+        }
+        
+            User::findOrFail($id)->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $password,
+            ]);
+
+            $message = 'Single User Updated Successfully';
             return response()->json(['message'=>$message], 201);
     }
 }
