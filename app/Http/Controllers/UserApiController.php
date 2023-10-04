@@ -9,6 +9,7 @@ use App\Models\User;
 
 class UserApiController extends Controller
 {
+    //show single or multiple user
     public function ShowUser($id=null){
         if($id==''){
             $users = User::get();
@@ -19,8 +20,9 @@ class UserApiController extends Controller
         }
     }
 
+    //add single user
     public function AddUser(Request $request){
-        $userss = $request->all();
+        $users = $request->all();
         $rules = [
             'name'=>'required',
             'email'=>'required|email|unique:users',
@@ -32,7 +34,7 @@ class UserApiController extends Controller
             'email.email'=>'Email must be valid',
             'password.required'=>'Password is required',
         ];
-        $validator = Validator::make($userss,$rules,$custom_msg);
+        $validator = Validator::make($users,$rules,$custom_msg);
         if($validator->fails()){
             return response()->json($validator->errors(), 422);
         }
@@ -42,6 +44,37 @@ class UserApiController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->email),
             ]);
+            $message = 'User Created Successfully';
+            return response()->json(['message'=>$message], 201);
+    }
+
+    //add multiple users by json
+    public function AddMultipleUser(Request $request){
+        $users = $request->all();        
+        $rules = [
+            'users.*.name'=>'required',
+            'users.*.email'=>'required|email|unique:users',
+            'users.*.password'=>'required',
+        ];
+        $custom_msg = [
+            'users.*.name.required'=>'Name is required',
+            'users.*.email.required'=>'Email is required',
+            'users.*.email.email'=>'Email must be valid',
+            'users.*.password.required'=>'Password is required',
+        ];
+        $validator = Validator::make($users,$rules,$custom_msg);
+        if($validator->fails()){
+            return response()->json($validator->errors(), 422);
+        }
+
+        foreach($users['users'] as $user){
+            User::create([
+                'name' => $user['name'],
+                'email' => $user['email'],
+                'password' => bcrypt($user['password']),
+            ]);
+        }    
+            
             $message = 'User Created Successfully';
             return response()->json(['message'=>$message], 201);
     }
