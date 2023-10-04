@@ -156,7 +156,7 @@ class UserApiController extends Controller
         return response()->json(['message'=>$message], 201);
     }
 
-    //delete api for delete single users data with josn
+    //delete api for delete single users data with json
     public function JsonDeleteSingleUser(Request $request){
         $users = $request->all();
         User::where('id',$users['id'])->delete();
@@ -168,6 +168,15 @@ class UserApiController extends Controller
     public function DeleteMultipleUsers($ids){
         $ids = explode(',',$ids);
         User::whereIn('id',$ids)->delete();
+        $message = 'Multiple Users Deleted Successfully';
+        return response()->json(['message'=>$message], 201);
+    }
+
+    
+    //delete api for delete multiple user data with json
+    public function JsonDeleteMultipleUser(Request $request){
+        $users = $request->all();
+        User::whereIn('id',$users['ids'])->delete();
         $message = 'Multiple Users Deleted Successfully';
         return response()->json(['message'=>$message], 201);
     }

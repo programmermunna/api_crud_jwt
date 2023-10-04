@@ -38,8 +38,11 @@ Route::patch('/update-single-user/{id}', [UserApiController::class, 'UpdateSingl
 //delete api for delete single user data
 Route::delete('/delete-single-user/{id}', [UserApiController::class, 'DeleteSingleUser']);
 
-//delete api for delete single user data with josn
+//delete api for delete single user data with json
 Route::delete('/delete-single-user-with-json', [UserApiController::class, 'JsonDeleteSingleUser']);
 
 //delete api for delete multiple users data
 Route::delete('/delete-multiple-users/{ids}', [UserApiController::class, 'DeleteMultipleUsers']);
+
+//delete api for delete multiple user data with json
+Route::delete('/delete-multiple-user-with-json', [UserApiController::class, 'JsonDeleteMultipleUser']);
